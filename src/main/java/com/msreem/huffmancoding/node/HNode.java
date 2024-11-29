@@ -2,8 +2,8 @@ package com.msreem.huffmancoding.node;
 
 public class HNode implements Comparable<HNode> {
 
-    private int freq;
     private byte byteVal;
+    private int freq;
     private HNode left, right;
 
     public HNode(int freq) {
@@ -16,6 +16,14 @@ public class HNode implements Comparable<HNode> {
 
     public void setFreq(int freq) {
         this.freq = freq;
+    }
+
+    public byte getByteVal() {
+        return byteVal;
+    }
+
+    public void setByteVal(byte byteVal) {
+        this.byteVal = byteVal;
     }
 
     public HNode getLeft() {
@@ -32,14 +40,6 @@ public class HNode implements Comparable<HNode> {
 
     public void setRight(HNode right) {
         this.right = right;
-    }
-
-    public boolean hasLeft() {
-        return left != null;
-    }
-
-    public boolean hasRight() {
-        return right != null;
     }
 
     public boolean isLeaf() {
