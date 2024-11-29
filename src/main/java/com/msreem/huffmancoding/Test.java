@@ -53,6 +53,45 @@ public class Test {
             if (huffmanCodes[i] != null)
                 System.out.println((char) i + " : " + huffmanCodes[i]);
 
+        final String filePathIn = "src/main/resources/com/msreem/huffmancoding/RandomCharacters.txt";
+        final String filePathOut = "src/main/resources/com/msreem/huffmancoding/RandomCharacters2.txt";
+        final byte bufferSize = 8;
+
+        try (BufferedInputStream bin = new BufferedInputStream(new FileInputStream(filePathIn), bufferSize);
+                BufferedOutputStream bout = new BufferedOutputStream(new FileOutputStream(filePathOut), bufferSize);) {
+            byte numOfBytesRead = 0;
+            byte[] bufferIn = new byte[bufferSize], bufferOut = new byte[bufferSize];
+            int j = 7, k = 0;
+            while ((numOfBytesRead = (byte) bin.read(bufferIn)) != -1) {
+                for (int i = 0; i < numOfBytesRead; i++) {
+                    String code = huffmanCodes[bufferIn[i]];
+                    for (char c : code.toCharArray()) {
+                        bufferOut[k] |= (byte) ((c - '0') << j--);
+                        if (j < 0) {
+                            j = 7; k++;
+                            if (k == 8) {
+                                bout.write(bufferOut);
+                                bufferOut = new byte[bufferSize];
+                                k = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            if (k > 0 || j < 7) bout.write(bufferOut);
+        }
+
+        try (BufferedInputStream bin = new BufferedInputStream(new FileInputStream(filePathOut), bufferSize)) {
+            byte numOfBytesRead = 0;
+            byte[] buffer = new byte[bufferSize];
+            while ((numOfBytesRead = (byte) bin.read(buffer)) != -1)
+                for (byte b : buffer) {
+                    for (int i = 7; i >= 0; i--)
+                        System.out.print((b >>> i) & 1);
+                    System.out.println();
+                }
+        }
+
     }
 
     private static void buildHuffCode(HNode node, String code, String[] huffmanCodes) {
