@@ -10,6 +10,11 @@ public class HNode implements Comparable<HNode> {
         setFreq(freq);
     }
 
+    public HNode(int freq, byte byteVal) {
+        setFreq(freq);
+        setByteVal(byteVal);
+    }
+
     public int getFreq() {
         return freq;
     }
