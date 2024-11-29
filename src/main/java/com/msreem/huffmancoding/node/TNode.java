@@ -52,7 +52,7 @@ public class TNode<T extends Comparable<T>> implements Comparable<TNode<T>> {
 
     @Override
     public int compareTo(TNode<T> o) {
-        return 0; // this is a dummy implementation
+        return data.compareTo(o.getData());
     }
 
 
