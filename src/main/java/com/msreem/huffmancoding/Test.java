@@ -24,6 +24,8 @@ public class Test {
         for (int i = 0; i < n-1; i++) {
             HNode x = minHeap.removeMin(), y = minHeap.removeMin();
             HNode z = new HNode(x.getFreq() + y.getFreq());
+            x.setBitCode((byte) 0);
+            y.setBitCode((byte) 1);
             z.setLeft(x);
             z.setRight(y);
             minHeap.add(z);
@@ -41,6 +43,19 @@ public class Test {
             if (curr.getRight() != null)
                 queue.offer(curr.getRight());
         }
+
+        System.out.println();
+
+        printHuffCode(root, "");
+    }
+
+    private static void printHuffCode(HNode node, String code) {
+        if (node.isLeaf()) {
+            System.out.println((char) (node.getByteVal() + 128) + " : " + code);
+            return;
+        }
+        printHuffCode(node.getLeft(), code + "0");
+        printHuffCode(node.getRight(), code + "1");
     }
 
     private static void testWithImg() throws IOException {
