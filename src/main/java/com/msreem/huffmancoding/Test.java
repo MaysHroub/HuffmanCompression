@@ -46,16 +46,22 @@ public class Test {
 
         System.out.println();
 
-        printHuffCode(root, "");
+        String[] huffmanCodes = new String[256];
+        buildHuffCode(root, "", huffmanCodes);
+
+        for (int i = 0; i < huffmanCodes.length; i++)
+            if (huffmanCodes[i] != null)
+                System.out.println((char) i + " : " + huffmanCodes[i]);
+
     }
 
-    private static void printHuffCode(HNode node, String code) {
+    private static void buildHuffCode(HNode node, String code, String[] huffmanCodes) {
         if (node.isLeaf()) {
-            System.out.println((char) (node.getByteVal() + 128) + " : " + code);
+            huffmanCodes[node.getByteVal()+128] = code;
             return;
         }
-        printHuffCode(node.getLeft(), code + "0");
-        printHuffCode(node.getRight(), code + "1");
+        buildHuffCode(node.getLeft(), code + "0", huffmanCodes);
+        buildHuffCode(node.getRight(), code + "1", huffmanCodes);
     }
 
     private static void testWithImg() throws IOException {
