@@ -1,9 +1,8 @@
 package com.msreem.huffmancoding;
 
 import java.io.*;
-import java.util.Scanner;
 
-public class TestReadCount {
+public class Test {
 
     public static void main(String[] args) throws IOException {
         testWithTxtFile();
