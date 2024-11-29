@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class TestReadCount {
 
     public static void main(String[] args) throws IOException {
-        testWithImg();
+        testWithTxtFile();
     }
 
     private static void testWithImg() throws IOException {
@@ -50,7 +50,7 @@ public class TestReadCount {
 
         for (int i = 0; i < freq.length; i++)
             if (freq[i] != 0)
-                System.out.println((char) i + " : " + freq[i]);
+                System.out.println((char) (i-128) + " : " + freq[i]);
     }
 
 }
