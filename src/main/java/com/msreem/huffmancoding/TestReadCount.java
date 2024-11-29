@@ -6,7 +6,11 @@ import java.util.Scanner;
 public class TestReadCount {
 
     public static void main(String[] args) throws IOException {
-        final String filePath = "src/main/resources/com/msreem/huffmancoding/RandomCharacters.txt";
+        testWithImg();
+    }
+
+    private static void testWithImg() throws IOException {
+        final String filePath = "src/main/resources/com/msreem/huffmancoding/TestImg.jpg";
         final byte bufferSize = 8;
 
         // to store frequency of each byte (00000000 to 11111111) -> 256 possibility
@@ -19,12 +23,12 @@ public class TestReadCount {
         try (BufferedInputStream bin = new BufferedInputStream(new FileInputStream(filePath), bufferSize)) {
             while ((numOfBytesRead = (byte) bin.read(buffer)) != -1)
                 for (byte b : buffer)
-                    freq[b]++;
+                        freq[b+128]++;   // byte value range: (-128, 127)
         }
 
         for (int i = 0; i < freq.length; i++)
             if (freq[i] != 0)
-                System.out.println((char) i + " : " + freq[i]);
+                System.out.println(i + " : " + freq[i]);
     }
 
     private static void testWithTxtFile() throws IOException {
@@ -41,7 +45,7 @@ public class TestReadCount {
         try (BufferedInputStream bin = new BufferedInputStream(new FileInputStream(filePath), bufferSize)) {
             while ((numOfBytesRead = (byte) bin.read(buffer)) != -1)
                 for (byte b : buffer)
-                    freq[b]++;
+                    freq[b+128]++;   // byte value range: (-128, 127)
         }
 
         for (int i = 0; i < freq.length; i++)
