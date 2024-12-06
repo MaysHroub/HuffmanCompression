@@ -16,6 +16,7 @@ public class HuffmanCompressor {
     private HNode root;
     private String[] huffmanCodes;
     private DataOutputStream dout;
+    private int itr;
 
 
     public HuffmanCompressor(String originalFileName) throws IOException {
@@ -70,30 +71,36 @@ public class HuffmanCompressor {
         dout.writeInt(getFileSizeInBytes()); // or write number of padding bits
         int headerSizeInBits = getHeaderSizeInBits(root);
         dout.writeInt(headerSizeInBits);
-        byte[] buffer = new byte[headerSizeInBits];
-        writeHuffmanTreeStructure(root, buffer, 0, headerSizeInBits);
+        byte[] buffer = new byte[(int) Math.ceil(headerSizeInBits / 8.0)];
+        itr = 0;
+        writeHuffmanTreeStructure(root, buffer, headerSizeInBits);
     }
 
     // pre-order traversal
-    private void writeHuffmanTreeStructure(HNode node, byte[] buffer, int itr, int n) throws IOException {
+    private void writeHuffmanTreeStructure(HNode node, byte[] buffer, int n) throws IOException {
         if (node == null) return;
-        if (itr == n-1) dout.write(buffer);
         if (node.isLeaf()) {
             int bitIdx = itr%8, byteIdx = itr/8;
             buffer[byteIdx] |= (byte) (1 << (7-bitIdx));
             itr++;
 
-            byte byteVal = node.getByteVal();
+            int byteVal = node.getByteVal() + 128;
             for (int i = 0; i < 8; i++) {
-                int bit = byteVal & (1 << (7-i));
+                int bit = (byteVal >>> (7-i)) & 1;
                 bitIdx = itr%8; byteIdx = itr/8;
                 buffer[byteIdx] |= (byte) (bit << (7-bitIdx));
                 itr++;
             }
+            if (itr >= n-1) {
+                for (byte b : buffer)
+                    System.out.println(b);
+                dout.write(buffer);
+            }
             return;
         }
-        writeHuffmanTreeStructure(node.getLeft(), buffer, itr, n);
-        writeHuffmanTreeStructure(node.getRight(), buffer, itr, n);
+        itr++;
+        writeHuffmanTreeStructure(node.getLeft(), buffer, n);
+        writeHuffmanTreeStructure(node.getRight(), buffer, n);
     }
 
     private int getFileSizeInBytes() {
@@ -137,7 +144,7 @@ public class HuffmanCompressor {
 
     private void generateHuffmanCodes(HNode node, String code, String[] huffmanCodes) {
         if (node.isLeaf()) {
-            huffmanCodes[node.getByteVal() + 128] = code;
+            huffmanCodes[node.getByteVal()+128] = code;
             return;
         }
         generateHuffmanCodes(node.getLeft(), code + "0", huffmanCodes);
