@@ -76,9 +76,13 @@ public class HuffmanCompressor {
         writeHuffmanTreeStructure(root, buffer, headerSizeInBits);
     }
 
-    // pre-order traversal
+    // post-order traversal
     private void writeHuffmanTreeStructure(HNode node, byte[] buffer, int n) throws IOException {
         if (node == null) return;
+
+        writeHuffmanTreeStructure(node.getLeft(), buffer, n);
+        writeHuffmanTreeStructure(node.getRight(), buffer, n);
+
         if (node.isLeaf()) {
             int bitIdx = itr%8, byteIdx = itr/8;
             buffer[byteIdx] |= (byte) (1 << (7-bitIdx));
@@ -91,16 +95,15 @@ public class HuffmanCompressor {
                 buffer[byteIdx] |= (byte) (bit << (7-bitIdx));
                 itr++;
             }
-            if (itr >= n-1) {
-                for (byte b : buffer)
-                    System.out.println(b);
-                dout.write(buffer);
-            }
-            return;
         }
-        itr++;
-        writeHuffmanTreeStructure(node.getLeft(), buffer, n);
-        writeHuffmanTreeStructure(node.getRight(), buffer, n);
+        else
+            itr++;
+
+        if (itr == n-1) {
+            for (byte b : buffer)
+                System.out.println(b);
+            dout.write(buffer);
+        }
     }
 
     private int getFileSizeInBytes() {
