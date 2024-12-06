@@ -25,13 +25,13 @@ public class HuffmanCompressor {
         this.originalFileName = originalFileName;
         if (getFileExtension().equalsIgnoreCase("huf"))
             throw new IllegalArgumentException("Invalid file extension.");
-
-        root = buildHuffmanTree(countFrequencies());
-        initHuffmanCodes(root);
-        dout = new DataOutputStream(new FileOutputStream(getCompressedFileName(), true));
     }
 
     public void compress() throws IOException {
+        root = buildHuffmanTree(countFrequencies());
+        initHuffmanCodes(root);
+        dout = new DataOutputStream(new FileOutputStream(getCompressedFileName(), true));
+
         writeHeader();
         writeData();
         dout.close();
