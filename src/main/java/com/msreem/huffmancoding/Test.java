@@ -13,6 +13,10 @@ public class Test {
         String fileName = "src/main/resources/com/msreem/huffmancoding/RandomCharacters.txt";
         HuffmanCompressor huffmanCompressor = new HuffmanCompressor(fileName);
         huffmanCompressor.compress();
+
+        String compressedFileName = "src/main/resources/com/msreem/huffmancoding/RandomCharacters.huf";
+        HuffmanDecompressor huffmanDecompressor = new HuffmanDecompressor(compressedFileName);
+        huffmanDecompressor.decompress();
     }
 
 }

@@ -6,7 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="7b3edb02-9fba-4b12-bd44-4a9757f3fd9a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanCompressor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanCompressor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanDecompressor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanDecompressor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/msreem/huffmancoding/RandomCharacters.huf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/msreem/huffmancoding/RandomCharacters2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/msreem/huffmancoding/RandomCharacters2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testHeader.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,10 +97,33 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ID_WIDTH">
+                <map>
+                  <entry key="Table.Default.Author.ColumnIdWidth" value="22" />
+                  <entry key="Table.Default.Date.ColumnIdWidth" value="22" />
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanDecompressor.java</url>
+          <line>48</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanDecompressor.java</url>
+          <line>101</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
