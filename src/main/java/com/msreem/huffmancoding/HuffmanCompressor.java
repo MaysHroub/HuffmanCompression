@@ -68,7 +68,7 @@ public class HuffmanCompressor {
 
     private void writeHeader() throws IOException {
         dout.writeUTF(getFileExtension());
-        dout.writeInt(getFileSizeInBytes()); // or write number of padding bits
+        // dout.writeInt(getFileSizeInBytes()); // or write number of padding bits
         int headerSizeInBits = getHeaderSizeInBits(root);
         dout.writeInt(headerSizeInBits);
         byte[] buffer = new byte[(int) Math.ceil(headerSizeInBits / 8.0)];
