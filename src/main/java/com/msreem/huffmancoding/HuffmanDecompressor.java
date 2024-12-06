@@ -38,31 +38,28 @@ public class HuffmanDecompressor {
 
             byte numOfBytesRead = 0;
             byte[] bufferIn = new byte[BUFFER_SIZE], bufferOut = new byte[BUFFER_SIZE];
-            int bitIdx = 0, byteIdx = 0, itr = 0, outIdx = 0;
+            int outIdx = 0;
             HNode curr = root;
 
             while ((numOfBytesRead = (byte) din.read(bufferIn)) != -1)
-                for (int i = 0; i < numOfBytesRead; i++) {
-                    int bit = (bufferIn[byteIdx] >>> (7-bitIdx)) & 1;
+                for (int i = 0; i < numOfBytesRead; i++)
+                    for (int j = 0; j < 8; j++) {
+                        int bit = (bufferIn[i] >>> (7-j)) & 1;
 
-                    if (bit == 0) curr = curr.getLeft();
-                    else curr = curr.getRight();
+                        if (bit == 0) curr = curr.getLeft();
+                        else curr = curr.getRight();
 
-                    itr++;
-                    bitIdx = itr % 8;
-                    byteIdx = itr / 8;
+                        if (curr.isLeaf()) {
+                            bufferOut[outIdx++] = curr.getByteVal();
+                            curr = root;
+                        }
 
-                    if (curr.isLeaf()) {
-                        bufferOut[outIdx++] = curr.getByteVal();
-                        curr = root;
+                        if (outIdx == BUFFER_SIZE) {
+                            dout.write(bufferOut);
+                            Arrays.fill(bufferOut, (byte) 0);
+                            outIdx = 0;
+                        }
                     }
-
-                    if (outIdx == BUFFER_SIZE) {
-                        dout.write(bufferOut);
-                        Arrays.fill(bufferOut, (byte) 0);
-                        outIdx = 0;
-                    }
-                }
 
             for (byte b : bufferOut)
                 if (b != 0)
