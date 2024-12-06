@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7b3edb02-9fba-4b12-bd44-4a9757f3fd9a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanCompressor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanCompressor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanCompressor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/Test.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -57,6 +57,26 @@
       <recent name="C:\Users\ismae\IdeaProjects\HuffmanCoding\src\main\resources\com\msreem\huffmancoding" />
     </key>
   </component>
+  <component name="RunManager">
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.msreem.huffmancoding.Test" />
+      <module name="HuffmanCoding" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.msreem.huffmancoding.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Test" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -78,5 +98,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanCompressor.java</url>
+          <line>46</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

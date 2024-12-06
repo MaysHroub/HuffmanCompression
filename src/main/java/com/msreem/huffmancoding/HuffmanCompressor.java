@@ -19,9 +19,15 @@ public class HuffmanCompressor {
 
 
     public HuffmanCompressor(String originalFileName) throws IOException {
+        if (originalFileName == null || originalFileName.isEmpty())
+            throw new IllegalArgumentException("Invalid file name.");
+
         this.originalFileName = originalFileName;
-        root = buildHuffmanTree(countFrequencies(originalFileName));
-        huffmanCodes = generateHuffmanCodes(root);
+        if (getFileExtension().equalsIgnoreCase("huf"))
+            throw new IllegalArgumentException("Invalid file extension.");
+
+        root = buildHuffmanTree(countFrequencies());
+        initHuffmanCodes(root);
         dout = new DataOutputStream(new FileOutputStream(getCompressedFileName(), true));
     }
 
@@ -98,7 +104,7 @@ public class HuffmanCompressor {
         int index = originalFileName.lastIndexOf(".");
         if (index == -1)
             return "";
-        return originalFileName.substring(index);
+        return originalFileName.substring(index+1);
     }
 
     private String getCompressedFileName() {
@@ -124,10 +130,9 @@ public class HuffmanCompressor {
         return internals + 9*leaves;
     }
 
-    private String[] generateHuffmanCodes(HNode root) {
-        String[] huffmanCodes = new String[BYTE_RANGE];
+    private void initHuffmanCodes(HNode root) {
+        huffmanCodes = new String[BYTE_RANGE];
         generateHuffmanCodes(root, "", huffmanCodes);
-        return huffmanCodes;
     }
 
     private void generateHuffmanCodes(HNode node, String code, String[] huffmanCodes) {
@@ -164,7 +169,7 @@ public class HuffmanCompressor {
         return minHeap;
     }
 
-    private int[] countFrequencies(String filePath) throws IOException {
+    private int[] countFrequencies() throws IOException {
         // to store frequency of each byte (00000000 to 11111111) -> 256 possibility
         int[] freq = new int[256];
 
