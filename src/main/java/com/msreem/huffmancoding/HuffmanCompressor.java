@@ -31,7 +31,7 @@ public class HuffmanCompressor {
     public void compress() throws IOException {
         root = buildHuffmanTree(countFrequencies());
         initHuffmanCodes(root);
-        dout = new DataOutputStream(new FileOutputStream(getCompressedFileName(), true));
+        dout = new DataOutputStream(new FileOutputStream(getCompressedFileName()));
 
         writeHeader();
         writeData();
