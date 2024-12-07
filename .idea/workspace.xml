@@ -8,10 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanCompressor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanCompressor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanDecompressor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanDecompressor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/msreem/huffmancoding/RandomCharacters.huf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/msreem/huffmancoding/RandomCharacters2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/msreem/huffmancoding/RandomCharacters2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testHeader.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/node/HNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/node/HNode.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,14 +111,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanDecompressor.java</url>
-          <line>48</line>
-          <option name="timeStamp" value="12" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanCompressor.java</url>
+          <line>107</line>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanDecompressor.java</url>
-          <line>101</line>
-          <option name="timeStamp" value="13" />
+          <line>52</line>
+          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

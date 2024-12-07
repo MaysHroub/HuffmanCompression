@@ -44,8 +44,12 @@ public class HuffmanCompressor {
             byte[] bufferIn = new byte[BUFFER_SIZE], bufferOut = new byte[BUFFER_SIZE];
             int bitIdx, byteIdx, itr = 0;
             while ((numOfBytesRead = (byte) din.read(bufferIn)) != -1)
+
                 for (int i = 0; i < numOfBytesRead; i++) {
-                    String code = huffmanCodes[bufferIn[i]];
+
+                    System.out.println("buffer: " + bufferIn[i]);
+                    String code = huffmanCodes[bufferIn[i] + 128];
+
                     for (int j = 0; j < code.length(); j++) {
                         if (itr == BUFFER_SIZE * 8) {
                             dout.write(bufferOut);
@@ -88,7 +92,7 @@ public class HuffmanCompressor {
             buffer[byteIdx] |= (byte) (1 << (7-bitIdx));
             itr++;
 
-            int byteVal = node.getByteVal() + 128;
+            int byteVal = node.getUnsignedByteVal() + 128;
             for (int i = 0; i < 8; i++) {
                 int bit = (byteVal >>> (7-i)) & 1;
                 bitIdx = itr%8; byteIdx = itr/8;
@@ -147,7 +151,7 @@ public class HuffmanCompressor {
 
     private void generateHuffmanCodes(HNode node, String code, String[] huffmanCodes) {
         if (node.isLeaf()) {
-            huffmanCodes[node.getByteVal()+128] = code;
+            huffmanCodes[node.getUnsignedByteVal()] = code;
             return;
         }
         generateHuffmanCodes(node.getLeft(), code + "0", huffmanCodes);
@@ -174,7 +178,7 @@ public class HuffmanCompressor {
         MinHeap<HNode> minHeap = new MinHeap<>(BYTE_RANGE);
         for (int i = 0; i < freq.length; i++) {
             if (freq[i] == 0) continue;
-            minHeap.add(new HNode(freq[i], (byte) i));
+            minHeap.add(new HNode(freq[i], i));
         }
         return minHeap;
     }
