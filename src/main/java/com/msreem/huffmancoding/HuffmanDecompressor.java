@@ -8,16 +8,17 @@ import java.util.Stack;
 
 public class HuffmanDecompressor {
 
-    public static final int BUFFER_SIZE = 8, BYTE_RANGE = 256;
+    public static final int BUFFER_SIZE = 8;
 
-    private String compressedFileName;
+    private final String compressedFileName;
     private String originalFileExtension;
     private byte numOfPaddingBits;
     private int headerSizeInBits;
     private HNode root;
     private DataInputStream din;
 
-    public HuffmanDecompressor(String compressedFileName) throws IOException {
+
+    public HuffmanDecompressor(String compressedFileName) {
         if (compressedFileName == null || compressedFileName.isEmpty())
             throw new IllegalArgumentException("Invalid file name.");
 
@@ -26,12 +27,48 @@ public class HuffmanDecompressor {
             throw new IllegalArgumentException("Invalid file extension.");
     }
 
+
     public void decompress() throws IOException {
         din = new DataInputStream(new FileInputStream(compressedFileName));
         readHeader();
         reconstructHuffmanCodingTree();
-        // initHuffmanCodesArray();
         decodeDataToOriginalFile();
+    }
+
+    private void readHeader() throws IOException {
+        originalFileExtension = din.readUTF();
+        numOfPaddingBits = din.readByte();
+        headerSizeInBits = din.readInt();
+    }
+
+    private void reconstructHuffmanCodingTree() throws IOException {
+        Stack<HNode> stack = new Stack<>();
+        byte[] buffer = readTreeStructure(headerSizeInBits);
+        int bitIdx = 0, byteIdx = 0;
+        for (int i = 0; i < headerSizeInBits; i++) {
+            bitIdx = i % 8;
+            byteIdx = i / 8;
+            int bit = (buffer[byteIdx] >>> (7 - bitIdx)) & 1;
+            if (bit == 1) {
+                byte byteVal = 0;
+                for (int j = 0; j < 8; j++) {
+                    i++;
+                    bitIdx = i % 8;
+                    byteIdx = i / 8;
+                    bit = (buffer[byteIdx] >>> (7 - bitIdx)) & 1;
+                    byteVal |= (byte) (bit << (7 - j));
+                }
+                HNode node = new HNode(0, byteVal);
+                stack.push(node);
+            } else {
+                HNode rightNode = stack.pop(), leftNode = stack.pop();
+                HNode node = new HNode(0);
+                node.setLeft(leftNode);
+                node.setRight(rightNode);
+                stack.push(node);
+            }
+        }
+        root = stack.pop();
     }
 
     private void decodeDataToOriginalFile() throws IOException {
@@ -76,42 +113,6 @@ public class HuffmanDecompressor {
         }
     }
 
-    private void readHeader() throws IOException {
-        originalFileExtension = din.readUTF();
-        numOfPaddingBits = din.readByte();
-        headerSizeInBits = din.readInt();
-    }
-
-    private void reconstructHuffmanCodingTree() throws IOException {
-        Stack<HNode> stack = new Stack<>();
-        byte[] buffer = readTreeStructure(headerSizeInBits);
-        int bitIdx = 0, byteIdx = 0;
-        for (int i = 0; i < headerSizeInBits; i++) {
-            bitIdx = i % 8;
-            byteIdx = i / 8;
-            int bit = (buffer[byteIdx] >>> (7-bitIdx)) & 1;
-            if (bit == 1) {
-                byte byteVal = 0;
-                for (int j = 0; j < 8; j++) {
-                    i++;
-                    bitIdx = i % 8;
-                    byteIdx = i / 8;
-                    bit = (buffer[byteIdx] >>> (7-bitIdx)) & 1;
-                    byteVal |= (byte) (bit << (7-j));
-                }
-                HNode node = new HNode(0, byteVal);
-                stack.push(node);
-            } else {
-                HNode rightNode = stack.pop(), leftNode = stack.pop();
-                HNode node = new HNode(0);
-                node.setLeft(leftNode);
-                node.setRight(rightNode);
-                stack.push(node);
-            }
-        }
-        root = stack.pop();
-    }
-
     private byte[] readTreeStructure(int headerSize) throws IOException {
         int bufferSize = (int) Math.ceil(headerSize / 8.0);
         byte[] buffer = new byte[bufferSize];
@@ -119,32 +120,18 @@ public class HuffmanDecompressor {
         return buffer;
     }
 
-//    private void initHuffmanCodesArray() {
-//        huffmanCodes = new String[BYTE_RANGE];
-//        generateHuffmanCodes(root, "", huffmanCodes);
-//    }
-
-//    private void generateHuffmanCodes(HNode node, String code, String[] huffmanCodes) {
-//        if (node.isLeaf()) {
-//            huffmanCodes[node.getByteVal()+128] = code;
-//            return;
-//        }
-//        generateHuffmanCodes(node.getLeft(), code + "0", huffmanCodes);
-//        generateHuffmanCodes(node.getRight(), code + "1", huffmanCodes);
-//    }
-
     private String getFileExtension() {
         int index = compressedFileName.lastIndexOf(".");
         if (index == -1)
             return "";
-        return compressedFileName.substring(index+1);
+        return compressedFileName.substring(index + 1);
     }
 
     private String getOriginalFileName() {
         int index = compressedFileName.lastIndexOf(".");
         if (index == -1)
             return "";
-        return compressedFileName.substring(0, index+1) + originalFileExtension;
+        return compressedFileName.substring(0, index + 1) + originalFileExtension;
     }
 
 }
