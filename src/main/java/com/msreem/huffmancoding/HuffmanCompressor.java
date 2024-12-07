@@ -14,6 +14,7 @@ public class HuffmanCompressor {
 
     private String originalFileName;
     private HNode root;
+    private int[] frequencies;
     private String[] huffmanCodes;
     private DataOutputStream dout;
     private int itr;
@@ -29,7 +30,8 @@ public class HuffmanCompressor {
     }
 
     public void compress() throws IOException {
-        root = buildHuffmanTree(countFrequencies());
+        countFrequencies();
+        root = buildHuffmanTree();
         initHuffmanCodes(root);
         dout = new DataOutputStream(new FileOutputStream(getCompressedFileName()));
 
@@ -72,7 +74,7 @@ public class HuffmanCompressor {
 
     private void writeHeader() throws IOException {
         dout.writeUTF(getFileExtension());
-        // dout.writeInt(getFileSizeInBytes()); // or write number of padding bits
+        dout.writeByte(getNumberOfPaddingBits());
         int headerSizeInBits = getHeaderSizeInBits(root);
         dout.writeInt(headerSizeInBits);
         byte[] buffer = new byte[(int) Math.ceil(headerSizeInBits / 8.0)];
@@ -110,8 +112,13 @@ public class HuffmanCompressor {
         }
     }
 
-    private int getFileSizeInBytes() {
-        return root.getFreq();
+    private int getNumberOfPaddingBits() {
+        int sum = 0;
+        for (int i = 0; i < BYTE_RANGE; i++)
+            if (huffmanCodes[i] != null)
+                sum += frequencies[i] * huffmanCodes[i].length();
+
+        return sum % 8;
     }
 
     private String getFileExtension() {
@@ -158,8 +165,8 @@ public class HuffmanCompressor {
         generateHuffmanCodes(node.getRight(), code + "1", huffmanCodes);
     }
 
-    private HNode buildHuffmanTree(int[] freq) {
-        MinHeap<HNode> minHeap = getMinHeap(freq);
+    private HNode buildHuffmanTree() {
+        MinHeap<HNode> minHeap = getMinHeap(frequencies);
         int numOfBytes = minHeap.getSize();
 
         for (int i = 0; i < numOfBytes - 1; i++) {
@@ -183,9 +190,9 @@ public class HuffmanCompressor {
         return minHeap;
     }
 
-    private int[] countFrequencies() throws IOException {
+    private void countFrequencies() throws IOException {
         // to store frequency of each byte (00000000 to 11111111) -> 256 possibility
-        int[] freq = new int[256];
+        frequencies = new int[BYTE_RANGE];
 
         // buffer to hold 8 bytes
         byte[] buffer = new byte[BUFFER_SIZE];
@@ -194,9 +201,8 @@ public class HuffmanCompressor {
         try (DataInputStream din = new DataInputStream(new FileInputStream(originalFileName))) {
             while ((numOfBytesRead = (byte) din.read(buffer)) != -1)
                 for (int i = 0; i < numOfBytesRead; i++)
-                    freq[buffer[i] + 128]++;   // byte value range: (-128, 127) -> so we add 128 to index
+                    frequencies[buffer[i] + 128]++;   // byte value range: (-128, 127) -> so we add 128 to index
         }
-        return freq;
     }
 
 }
