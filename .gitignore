@@ -38,3 +38,5 @@ build/
 
 ### Mac OS ###
 .DS_StoreTest.java
+
+src/main/java/com/msreem/huffmancoding/Test.java
