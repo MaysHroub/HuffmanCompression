@@ -5,12 +5,10 @@ import com.msreem.huffmancoding.node.HNode;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class HuffmanCompressor {
 
-    public static final int BUFFER_SIZE = 8, BYTE_RANGE = 256;
+    public static final int BUFFER_SIZE = 8, BYTE_RANGE = 256, INTERNAL_NODE_IDX = 0, LEAF_NODE_IDX = 1;
 
     private final String originalFileName;
     private HNode root;
@@ -173,19 +171,17 @@ public class HuffmanCompressor {
     }
 
     private int getHeaderSizeInBits(HNode root) {
-        int internals = 0, leaves = 0;
-        Queue<HNode> queue = new LinkedList<>();
-        queue.offer(root);
-        while (!queue.isEmpty()) {
-            HNode curr = queue.poll();
-            if (curr.isLeaf()) leaves++;
-            else internals++;
-            if (curr.getLeft() != null)
-                queue.offer(curr.getLeft());
-            if (curr.getRight() != null)
-                queue.offer(curr.getRight());
-        }
-        return internals + 9 * leaves;
+        int[] count = new int[2];
+        inOrderCount(root, count);
+        return count[INTERNAL_NODE_IDX] + 9 * count[LEAF_NODE_IDX];
+    }
+
+    private void inOrderCount(HNode node, int[] count) {
+        if (node == null) return;
+        inOrderCount(node.getLeft(), count);
+        if (node.isLeaf()) count[LEAF_NODE_IDX]++;
+        else count[INTERNAL_NODE_IDX]++;
+        inOrderCount(node.getRight(), count);
     }
 
     private String getFileExtension() {

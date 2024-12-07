@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7b3edb02-9fba-4b12-bd44-4a9757f3fd9a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanCompressor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanCompressor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanDecompressor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/msreem/huffmancoding/HuffmanDecompressor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
