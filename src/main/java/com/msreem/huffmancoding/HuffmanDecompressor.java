@@ -1,10 +1,10 @@
 package com.msreem.huffmancoding;
 
 import com.msreem.huffmancoding.node.HNode;
+import com.msreem.huffmancoding.stack.ArrayStack;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.Stack;
 
 public class HuffmanDecompressor {
 
@@ -42,8 +42,8 @@ public class HuffmanDecompressor {
     }
 
     private void reconstructHuffmanCodingTree() throws IOException {
-        Stack<HNode> stack = new Stack<>();
-        byte[] buffer = readTreeStructure(headerSizeInBits);
+        ArrayStack<HNode> stack = new ArrayStack<>(HNode.class, headerSizeInBits);
+        byte[] buffer = readTreeStructure();
         int bitIdx = 0, byteIdx = 0;
         for (int i = 0; i < headerSizeInBits; i++) {
             bitIdx = i % 8;
@@ -113,8 +113,8 @@ public class HuffmanDecompressor {
         }
     }
 
-    private byte[] readTreeStructure(int headerSize) throws IOException {
-        int bufferSize = (int) Math.ceil(headerSize / 8.0);
+    private byte[] readTreeStructure() throws IOException {
+        int bufferSize = (int) Math.ceil(headerSizeInBits / 8.0);
         byte[] buffer = new byte[bufferSize];
         din.read(buffer);
         return buffer;
