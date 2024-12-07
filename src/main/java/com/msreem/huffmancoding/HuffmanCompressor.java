@@ -10,7 +10,7 @@ public class HuffmanCompressor {
 
     public static final int BUFFER_SIZE = 8, BYTE_RANGE = 256, INTERNAL_NODE_IDX = 0, LEAF_NODE_IDX = 1;
 
-    private final String originalFileName;
+    private String originalFileName;
     private HNode root;
     private int[] frequencies;
     private String[] huffmanCodes;
@@ -26,6 +26,22 @@ public class HuffmanCompressor {
             throw new IllegalArgumentException("Invalid file extension.");
     }
 
+
+    public void setOriginalFileName(String originalFileName) {
+        this.originalFileName = originalFileName;
+    }
+
+    public String getOriginalFileName() {
+        return originalFileName;
+    }
+
+    public int[] getFrequencies() {
+        return frequencies;
+    }
+
+    public String[] getHuffmanCodes() {
+        return huffmanCodes;
+    }
 
     public void compress() throws IOException {
         countFrequencies();
