@@ -12,6 +12,7 @@ public class HuffmanDecompressor {
 
     private String compressedFileName;
     private String originalFileExtension;
+    private byte numOfPaddingBits;
     private int headerSizeInBits;
     private HNode root;
     private DataInputStream din;
@@ -38,13 +39,20 @@ public class HuffmanDecompressor {
 
             byte numOfBytesRead = 0;
             byte[] bufferIn = new byte[BUFFER_SIZE], bufferOut = new byte[BUFFER_SIZE];
-            int outIdx = 0;
+            int outIdx = 0, numOfBitsToRead = 8;
+            boolean ignorePaddingBits = false;
             HNode curr = root;
 
-            while ((numOfBytesRead = (byte) din.read(bufferIn)) != -1)
-                for (int i = 0; i < numOfBytesRead; i++)
-                    for (int j = 0; j < 8; j++) {
-                        int bit = (bufferIn[i] >>> (7-j)) & 1;
+            while ((numOfBytesRead = (byte) din.read(bufferIn)) != -1) {
+                if (numOfBytesRead < 8 || din.available() == -1)
+                    ignorePaddingBits = true;
+
+                for (int i = 0; i < numOfBytesRead; i++) {
+                    if (ignorePaddingBits && i == numOfBytesRead - 1)
+                        numOfBitsToRead = 8 - numOfPaddingBits;
+
+                    for (int j = 0; j < numOfBitsToRead; j++) {
+                        int bit = (bufferIn[i] >>> (7 - j)) & 1;
 
                         if (bit == 0) curr = curr.getLeft();
                         else curr = curr.getRight();
@@ -60,7 +68,8 @@ public class HuffmanDecompressor {
                             outIdx = 0;
                         }
                     }
-
+                }
+            }
             for (byte b : bufferOut)
                 if (b != 0)
                     dout.write(b);
@@ -69,6 +78,7 @@ public class HuffmanDecompressor {
 
     private void readHeader() throws IOException {
         originalFileExtension = din.readUTF();
+        numOfPaddingBits = din.readByte();
         headerSizeInBits = din.readInt();
     }
 
