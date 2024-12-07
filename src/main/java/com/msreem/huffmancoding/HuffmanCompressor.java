@@ -70,7 +70,7 @@ public class HuffmanCompressor {
     }
 
     private void buildHuffmanTree() {
-        MinHeap<HNode> minHeap = getMinHeap(frequencies);
+        MinHeap<HNode> minHeap = getMinHeap();
         int numOfBytes = minHeap.getSize();
 
         for (int i = 0; i < numOfBytes - 1; i++) {
@@ -168,11 +168,11 @@ public class HuffmanCompressor {
         return itr;
     }
 
-    private MinHeap<HNode> getMinHeap(int[] freq) {
+    private MinHeap<HNode> getMinHeap() {
         MinHeap<HNode> minHeap = new MinHeap<>(BYTE_RANGE);
-        for (int i = 0; i < freq.length; i++) {
-            if (freq[i] == 0) continue;
-            minHeap.add(new HNode(freq[i], i));
+        for (int i = 0; i < frequencies.length; i++) {
+            if (frequencies[i] == 0) continue;
+            minHeap.add(new HNode(frequencies[i], i));
         }
         return minHeap;
     }
