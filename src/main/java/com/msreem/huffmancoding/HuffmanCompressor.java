@@ -17,7 +17,6 @@ public class HuffmanCompressor {
     private int[] frequencies;
     private String[] huffmanCodes;
     private DataOutputStream dout;
-    private int itr;
 
 
     public HuffmanCompressor(String originalFileName) {
@@ -92,8 +91,7 @@ public class HuffmanCompressor {
         int headerSizeInBits = getHeaderSizeInBits(root);
         dout.writeInt(headerSizeInBits);
         byte[] buffer = new byte[(int) Math.ceil(headerSizeInBits / 8.0)];
-        itr = 0;
-        writeHuffmanTreeStructure(root, buffer, headerSizeInBits);
+        writeHuffmanTreeStructure(root, buffer, 0, headerSizeInBits);
     }
 
     private void writeData() throws IOException {
@@ -128,11 +126,11 @@ public class HuffmanCompressor {
     }
 
     // post-order traversal
-    private void writeHuffmanTreeStructure(HNode node, byte[] buffer, int n) throws IOException {
-        if (node == null) return;
+    private int writeHuffmanTreeStructure(HNode node, byte[] buffer, int itr, int n) throws IOException {
+        if (node == null) return itr;
 
-        writeHuffmanTreeStructure(node.getLeft(), buffer, n);
-        writeHuffmanTreeStructure(node.getRight(), buffer, n);
+        itr = writeHuffmanTreeStructure(node.getLeft(), buffer, itr, n);
+        itr = writeHuffmanTreeStructure(node.getRight(), buffer, itr, n);
 
         if (node.isLeaf()) {
             int bitIdx = itr % 8, byteIdx = itr / 8;
@@ -152,6 +150,8 @@ public class HuffmanCompressor {
 
         if (itr == n - 1)
             dout.write(buffer);
+
+        return itr;
     }
 
     private MinHeap<HNode> getMinHeap(int[] freq) {
