@@ -1,3 +1,5 @@
+src/main/resources/com/msreem/huffmancoding
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -35,4 +37,4 @@ build/
 .vscode/
 
 ### Mac OS ###
-.DS_Store
+.DS_StoreTest.java
