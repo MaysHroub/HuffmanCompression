@@ -2,6 +2,9 @@ package com.msreem.huffmancoding;
 
 import com.msreem.huffmancoding.heap.MinHeap;
 import com.msreem.huffmancoding.node.HNode;
+import com.msreem.huffmancoding.tabledata.HuffmanData;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.util.Arrays;
@@ -10,29 +13,31 @@ public class HuffmanCompressor {
 
     public static final int BUFFER_SIZE = 8, BYTE_RANGE = 256, INTERNAL_NODE_IDX = 0, LEAF_NODE_IDX = 1;
 
-    private String originalFileName;
+    private String originalFilePath;
     private HNode root;
     private int[] frequencies;
     private String[] huffmanCodes;
     private DataOutputStream dout;
 
 
-    public HuffmanCompressor(String originalFileName) {
-        if (originalFileName == null || originalFileName.isEmpty())
+    public HuffmanCompressor() {}
+
+    public HuffmanCompressor(String originalFilePath) {
+        setOriginalFilePath(originalFilePath);
+    }
+
+
+    public void setOriginalFilePath(String originalFilePath) throws IllegalArgumentException {
+        if (originalFilePath == null || originalFilePath.isEmpty())
             throw new IllegalArgumentException("Invalid file name.");
 
-        this.originalFileName = originalFileName;
+        this.originalFilePath = originalFilePath;
         if (getFileExtension().equalsIgnoreCase("huf"))
             throw new IllegalArgumentException("Invalid file extension.");
     }
 
-
-    public void setOriginalFileName(String originalFileName) {
-        this.originalFileName = originalFileName;
-    }
-
-    public String getOriginalFileName() {
-        return originalFileName;
+    public String getOriginalFilePath() {
+        return originalFilePath;
     }
 
     public int[] getFrequencies() {
@@ -48,7 +53,7 @@ public class HuffmanCompressor {
         buildHuffmanTree();
         initHuffmanCodesArray();
 
-        dout = new DataOutputStream(new FileOutputStream(getCompressedFileName()));
+        dout = new DataOutputStream(new FileOutputStream(getCompressedFilePath()));
         writeHeader();
         writeData();
         dout.close();
@@ -62,7 +67,7 @@ public class HuffmanCompressor {
         byte[] buffer = new byte[BUFFER_SIZE];
 
         byte numOfBytesRead = 0;
-        try (DataInputStream din = new DataInputStream(new FileInputStream(originalFileName))) {
+        try (DataInputStream din = new DataInputStream(new FileInputStream(originalFilePath))) {
             while ((numOfBytesRead = (byte) din.read(buffer)) != -1)
                 for (int i = 0; i < numOfBytesRead; i++)
                     frequencies[buffer[i] + 128]++;   // byte value range: (-128, 127) -> so we add 128 to index
@@ -87,16 +92,16 @@ public class HuffmanCompressor {
 
     private void initHuffmanCodesArray() {
         huffmanCodes = new String[BYTE_RANGE];
-        generateHuffmanCodes(root, "", huffmanCodes);
+        generateHuffmanCodes(root, "");
     }
 
-    private void generateHuffmanCodes(HNode node, String code, String[] huffmanCodes) {
+    private void generateHuffmanCodes(HNode node, String code) {
         if (node.isLeaf()) {
             huffmanCodes[node.getUnsignedByteVal()] = code;
             return;
         }
-        generateHuffmanCodes(node.getLeft(), code + "0", huffmanCodes);
-        generateHuffmanCodes(node.getRight(), code + "1", huffmanCodes);
+        generateHuffmanCodes(node.getLeft(), code + "0");
+        generateHuffmanCodes(node.getRight(), code + "1");
     }
 
     private void writeHeader() throws IOException {
@@ -109,7 +114,7 @@ public class HuffmanCompressor {
     }
 
     private void writeData() throws IOException {
-        try (DataInputStream din = new DataInputStream(new FileInputStream(originalFileName))) {
+        try (DataInputStream din = new DataInputStream(new FileInputStream(originalFilePath))) {
             byte numOfBytesRead = 0;
             byte[] bufferIn = new byte[BUFFER_SIZE], bufferOut = new byte[BUFFER_SIZE];
             int bitIdx, byteIdx, itr = 0;
@@ -200,20 +205,45 @@ public class HuffmanCompressor {
         inOrderCount(node.getRight(), count);
     }
 
-    private String getFileExtension() {
-        int index = originalFileName.lastIndexOf(".");
+    public String getFileExtension() {
+        int index = originalFilePath.lastIndexOf(".");
         if (index == -1)
             return "";
-        return originalFileName.substring(index + 1);
+        return originalFilePath.substring(index + 1);
     }
 
-    private String getCompressedFileName() {
-        int index = originalFileName.lastIndexOf(".");
+    public String getCompressedFilePath() {
+        int index = originalFilePath.lastIndexOf(".");
         if (index == -1)
             return "";
-        return originalFileName.substring(0, index + 1) + "huf";
+        return originalFilePath.substring(0, index + 1) + "huf";
     }
 
+    public ObservableList<HuffmanData> generateHuffmanDataList() {
+        ObservableList<HuffmanData> list = FXCollections.observableArrayList();
+        for (int i = 0; i < BYTE_RANGE; i++) {
+            if (frequencies[i] != 0) {
+                HuffmanData data = new HuffmanData(i, frequencies[i], huffmanCodes[i]);
+                list.add(data);
+            }
+        }
+        return list;
+    }
+
+    public String getHeaderStringRepresentation() {
+        StringBuilder strbld = new StringBuilder();
+        postOrderTraverse(root, strbld);
+        return strbld.toString();
+    }
+
+    private void postOrderTraverse(HNode node, StringBuilder strbld) {
+        if (node == null) return;
+        postOrderTraverse(node.getLeft(), strbld);
+        postOrderTraverse(node.getRight(), strbld);
+
+        if (node.isLeaf()) strbld.append(1).append("  ").append(Integer.toBinaryString(node.getUnsignedByteVal())).append("   ");
+        else strbld.append(0).append("   ");
+    }
 }
 
 
