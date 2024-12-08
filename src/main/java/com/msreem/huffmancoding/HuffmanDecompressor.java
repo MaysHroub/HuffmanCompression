@@ -10,7 +10,7 @@ public class HuffmanDecompressor {
 
     public static final int BUFFER_SIZE = 8;
 
-    private final String compressedFileName;
+    private String compressedFilePath;
     private String originalFileExtension;
     private byte numOfPaddingBits;
     private int headerSizeInBits;
@@ -18,18 +18,28 @@ public class HuffmanDecompressor {
     private DataInputStream din;
 
 
-    public HuffmanDecompressor(String compressedFileName) {
-        if (compressedFileName == null || compressedFileName.isEmpty())
+    public HuffmanDecompressor() {}
+
+    public HuffmanDecompressor(String compressedFilePath) {
+        setCompressedFilePath(compressedFilePath);
+    }
+
+
+    public String getCompressedFilePath() {
+        return compressedFilePath;
+    }
+
+    public void setCompressedFilePath(String compressedFilePath) throws IllegalArgumentException {
+        if (compressedFilePath == null || compressedFilePath.isEmpty())
             throw new IllegalArgumentException("Invalid file name.");
 
-        this.compressedFileName = compressedFileName;
+        this.compressedFilePath = compressedFilePath;
         if (!getFileExtension().equalsIgnoreCase("huf"))
             throw new IllegalArgumentException("Invalid file extension.");
     }
 
-
     public void decompress() throws IOException {
-        din = new DataInputStream(new FileInputStream(compressedFileName));
+        din = new DataInputStream(new FileInputStream(compressedFilePath));
         readHeader();
         reconstructHuffmanCodingTree();
         decodeDataToOriginalFile();
@@ -72,7 +82,7 @@ public class HuffmanDecompressor {
     }
 
     private void decodeDataToOriginalFile() throws IOException {
-        try (DataOutputStream dout = new DataOutputStream(new FileOutputStream(getOriginalFileName()))) {
+        try (DataOutputStream dout = new DataOutputStream(new FileOutputStream(getOriginalFilePath()))) {
 
             byte numOfBytesRead = 0;
             byte[] bufferIn = new byte[BUFFER_SIZE], bufferOut = new byte[BUFFER_SIZE];
@@ -120,18 +130,18 @@ public class HuffmanDecompressor {
         return buffer;
     }
 
-    private String getFileExtension() {
-        int index = compressedFileName.lastIndexOf(".");
+    public String getFileExtension() {
+        int index = compressedFilePath.lastIndexOf(".");
         if (index == -1)
             return "";
-        return compressedFileName.substring(index + 1);
+        return compressedFilePath.substring(index + 1);
     }
 
-    private String getOriginalFileName() {
-        int index = compressedFileName.lastIndexOf(".");
+    public String getOriginalFilePath() {
+        int index = compressedFilePath.lastIndexOf(".");
         if (index == -1)
             return "";
-        return compressedFileName.substring(0, index + 1) + originalFileExtension;
+        return compressedFilePath.substring(0, index) + "_." + originalFileExtension;
     }
 
 }
