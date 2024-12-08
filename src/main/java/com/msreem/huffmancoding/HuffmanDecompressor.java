@@ -115,7 +115,7 @@ public class HuffmanDecompressor {
                         else curr = curr.getRight();
 
                         if (curr.isLeaf()) {
-                            bufferOut[outIdx++] = (byte) curr.getUnsignedByteVal();
+                            bufferOut[outIdx++] = curr.getByteVal();
                             curr = root;
                         }
 
