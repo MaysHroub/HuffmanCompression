@@ -72,7 +72,7 @@ public class HuffmanCompressor {
         try (DataInputStream din = new DataInputStream(new FileInputStream(originalFile))) {
             while ((numOfBytesRead = (byte) din.read(buffer)) != -1)
                 for (int i = 0; i < numOfBytesRead; i++)
-                    frequencies[buffer[i] + 128]++;   // byte value range: (-128, 127) -> so we add 128 to index
+                    frequencies[buffer[i] + (buffer[i] < 0 ? 256 : 0)]++;   // byte value range: (-128, 127) -> so we add 128 to index
         }
     }
 
@@ -99,7 +99,8 @@ public class HuffmanCompressor {
 
     private void generateHuffmanCodes(HNode node, String code) {
         if (node.isLeaf()) {
-            huffmanCodes[node.getUnsignedByteVal()] = code;
+            byte b = node.getByteVal();
+            huffmanCodes[b + (b < 0 ? 256 : 0)] = code;
             return;
         }
         generateHuffmanCodes(node.getLeft(), code + "0");
@@ -124,7 +125,7 @@ public class HuffmanCompressor {
 
                 for (int i = 0; i < numOfBytesRead; i++) {
 
-                    String code = huffmanCodes[bufferIn[i] + 128];
+                    String code = huffmanCodes[bufferIn[i] + (bufferIn[i] < 0 ? 256 : 0)];
 
                     for (int j = 0; j < code.length(); j++) {
                         if (itr == BUFFER_SIZE * 8) {
@@ -158,7 +159,7 @@ public class HuffmanCompressor {
             buffer[byteIdx] |= (byte) (1 << (7 - bitIdx));
             itr++;
 
-            int byteVal = node.getUnsignedByteVal() + 128;
+            byte byteVal = node.getByteVal();
             for (int i = 0; i < 8; i++) {
                 int bit = (byteVal >>> (7 - i)) & 1;
                 bitIdx = itr % 8;
@@ -179,7 +180,7 @@ public class HuffmanCompressor {
         MinHeap<HNode> minHeap = new MinHeap<>(BYTE_RANGE);
         for (int i = 0; i < frequencies.length; i++) {
             if (frequencies[i] == 0) continue;
-            minHeap.add(new HNode(frequencies[i], i));
+            minHeap.add(new HNode(frequencies[i], (byte) i));
         }
         return minHeap;
     }
@@ -224,7 +225,7 @@ public class HuffmanCompressor {
         ObservableList<HuffmanData> list = FXCollections.observableArrayList();
         for (int i = 0; i < BYTE_RANGE; i++) {
             if (frequencies[i] != 0) {
-                HuffmanData data = new HuffmanData(i, frequencies[i], huffmanCodes[i]);
+                HuffmanData data = new HuffmanData((byte) i, frequencies[i], huffmanCodes[i]);
                 list.add(data);
             }
         }
@@ -242,7 +243,7 @@ public class HuffmanCompressor {
         postOrderTraverse(node.getLeft(), strbld);
         postOrderTraverse(node.getRight(), strbld);
 
-        if (node.isLeaf()) strbld.append(1).append("  ").append(Integer.toBinaryString(node.getUnsignedByteVal())).append("   ");
+        if (node.isLeaf()) strbld.append(1).append("  ").append(Integer.toBinaryString(node.getByteVal())).append("   ");
         else strbld.append(0).append("   ");
     }
 }
