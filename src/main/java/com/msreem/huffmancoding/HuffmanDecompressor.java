@@ -28,7 +28,7 @@ public class HuffmanDecompressor {
 
 
     public void setCompressedFile(File compressedFile) throws IllegalArgumentException, FileNotFoundException {
-        if (compressedFile == null || compressedFile.exists())
+        if (compressedFile == null || !compressedFile.exists())
             throw new IllegalArgumentException("Invalid file.");
 
         this.compressedFile = compressedFile;
