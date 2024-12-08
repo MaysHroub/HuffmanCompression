@@ -57,7 +57,7 @@ public class MainApp extends Application {
         linkIV.setVisible(false);
 
         Button browseBtn = new Button("Browse File");
-        compressBtn = new Button("Compress");
+        compressBtn = new Button("  Compress  ");
         decompressBtn = new Button("Decompress");
         Button statBtn = new Button("Show Statistics");
         Button tableBtn = new Button("Show Table");
@@ -65,6 +65,9 @@ public class MainApp extends Application {
         originalFilePathL = new Label("No File Selected");
         processedFilePathL = new Label();
         messageL = new Label();
+        statBtn.setVisible(false);
+        tableBtn.setVisible(false);
+        headerBtn.setVisible(false);
 
         messageL.setTextAlignment(TextAlignment.CENTER);
         processedFilePathL.setId("pathL");
@@ -94,10 +97,12 @@ public class MainApp extends Application {
                 else
                     decompressBtn.setDisable(true);
             }
-
             messageL.setText("");
             processedFilePathL.setText("");
             linkIV.setVisible(false);
+            statBtn.setVisible(false);
+            tableBtn.setVisible(false);
+            headerBtn.setVisible(false);
         });
         compressBtn.setOnAction(e -> {
             if (file == null) {
@@ -105,17 +110,23 @@ public class MainApp extends Application {
                 return;
             }
             try {
-                compressor.setOriginalFilePath(file.getAbsolutePath());
+                compressor.setOriginalFile(file);
                 compressionTime = System.currentTimeMillis();
                 compressor.compress();
                 compressionTime = System.currentTimeMillis() - compressionTime;
                 messageL.setText("Compression is Done!");
-                processedFilePathL.setText(compressor.getCompressedFilePath());
+                processedFilePathL.setText(compressor.getCompressedFile().getAbsolutePath());
                 linkIV.setVisible(true);
+                statBtn.setVisible(true);
+                tableBtn.setVisible(true);
+                headerBtn.setVisible(true);
             } catch (IOException | IllegalArgumentException ex) {
                 messageL.setText("Error: " + ex.getMessage());
                 processedFilePathL.setText("");
                 linkIV.setVisible(false);
+                statBtn.setVisible(false);
+                tableBtn.setVisible(false);
+                headerBtn.setVisible(false);
             }
         });
         decompressBtn.setOnAction(e -> {
@@ -124,10 +135,10 @@ public class MainApp extends Application {
                 return;
             }
             try {
-                decompressor.setCompressedFilePath(file.getAbsolutePath());
+                decompressor.setCompressedFile(file);
                 decompressor.decompress();
                 messageL.setText("Decompression is Done!");
-                processedFilePathL.setText(decompressor.getOriginalFilePath());
+                processedFilePathL.setText(decompressor.getDecompressedFile().getAbsolutePath());
                 linkIV.setVisible(true);
             } catch (IOException | IllegalArgumentException ex) {
                 messageL.setText("Error: " + ex.getMessage());
@@ -155,7 +166,7 @@ public class MainApp extends Application {
         VBox labelsVB = new VBox(10, messageL, processedFilePathL);
         labelsVB.setAlignment(Pos.CENTER);
 
-        mainLayout = new VBox(40, upperPane, midPane, lowerPane, labelsVB);
+        mainLayout = new VBox(50, upperPane, midPane, lowerPane, labelsVB);
         mainLayout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(mainLayout, 800, 500);
@@ -168,16 +179,16 @@ public class MainApp extends Application {
             scene.setRoot(tableLayout);
         });
         statBtn.setOnAction(e -> {
-            File originalFile = new File(compressor.getOriginalFilePath()),
-                    compressedFile = new File(compressor.getCompressedFilePath());
+            File originalFile = compressor.getOriginalFile(),
+                    compressedFile = compressor.getCompressedFile();
 
-            long originalFileSize = originalFile.getUsableSpace();
-            long compressedFileSize = compressedFile.getUsableSpace();
+            long originalFileSize = originalFile.length();
+            long compressedFileSize = compressedFile.length();
 
             originalFileSizeL.setText(originalFileSize + "");
             compressedFileSizeL.setText(compressedFileSize + "");
             double compressionPercentage = (1 - (double) compressedFileSize / originalFileSize) * 100;
-            compressionPercentageL.setText(compressionPercentage + "%");
+            compressionPercentageL.setText(String.format("%.2f%%", compressionPercentage));
             compressionTimeL.setText(compressionTime + "");
             spaceSavedL.setText((originalFileSize - compressedFileSize) + "");
             scene.setRoot(statLayout);
@@ -252,7 +263,7 @@ public class MainApp extends Application {
     private void initTableLayout(Scene scene) {
         tableView = new TableView<>();
 
-        TableColumn<HuffmanData, Integer> byteColumn = new TableColumn<>("Byte");
+        TableColumn<HuffmanData, Integer> byteColumn = new TableColumn<>("Byte (Unsigned)");
         byteColumn.setCellValueFactory(new PropertyValueFactory<>("unsignedByteVal"));
         TableColumn<HuffmanData, Character> asciiColumn = new TableColumn<>("ASCII Value");
         asciiColumn.setCellValueFactory(new PropertyValueFactory<>("asciiValue"));
