@@ -42,9 +42,9 @@ public class MainApp extends Application {
         compressor = new HuffmanCompressor();
         decompressor = new HuffmanDecompressor();
 
-        String compressImgPath = "/com/msreem/images/data-compression.png",
-                decompressImgPath = "/com/msreem/images/data-decompression.png",
-                linkImgPath = "/com/msreem/images/link.png";
+        String compressImgPath = "/com/msreem/huffmancoding/images/data-compression.png",
+                decompressImgPath = "/com/msreem/huffmancoding/images/data-decompression.png",
+                linkImgPath = "/com/msreem/huffmancoding/images/link.png";
         ImageView compressIV = new ImageView(getClass().getResource(compressImgPath).toExternalForm()),
                 decompressIV = new ImageView(getClass().getResource(decompressImgPath).toExternalForm()),
                 linkIV = new ImageView(getClass().getResource(linkImgPath).toExternalForm());
