@@ -40,3 +40,4 @@ build/
 .DS_StoreTest.java
 
 src/main/java/com/msreem/huffmancoding/Test.java
+src/main/java/com/msreem/huffmancoding/test
