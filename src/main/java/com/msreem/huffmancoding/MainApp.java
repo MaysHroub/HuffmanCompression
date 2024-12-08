@@ -263,8 +263,8 @@ public class MainApp extends Application {
     private void initTableLayout(Scene scene) {
         tableView = new TableView<>();
 
-        TableColumn<HuffmanData, Integer> byteColumn = new TableColumn<>("Byte (Unsigned)");
-        byteColumn.setCellValueFactory(new PropertyValueFactory<>("unsignedByteVal"));
+        TableColumn<HuffmanData, Integer> byteColumn = new TableColumn<>("Byte (Signed)");
+        byteColumn.setCellValueFactory(new PropertyValueFactory<>("byteVal"));
         TableColumn<HuffmanData, Character> asciiColumn = new TableColumn<>("ASCII Value");
         asciiColumn.setCellValueFactory(new PropertyValueFactory<>("asciiValue"));
         TableColumn<HuffmanData, Integer> frequencyColumn = new TableColumn<>("Frequency");

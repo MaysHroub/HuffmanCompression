@@ -2,7 +2,7 @@ package com.msreem.huffmancoding.tabledata;
 
 public class HuffmanData {
 
-    private int unsignedByteVal;
+    private byte byteVal;
     private char asciiValue;
     private int frequency;
     private String code;
@@ -12,20 +12,20 @@ public class HuffmanData {
     public HuffmanData() {
     }
 
-    public HuffmanData(int unsignedByteVal, int frequency, String code) {
-        this.unsignedByteVal = unsignedByteVal;
-        this.asciiValue = (char) (unsignedByteVal);
+    public HuffmanData(byte byteVal, int frequency, String code) {
+        this.byteVal = byteVal;
+        this.asciiValue = (char) (byteVal);
         this.frequency = frequency;
         this.code = code;
         this.codeLength = code.length();
     }
 
-    public int getUnsignedByteVal() {
-        return unsignedByteVal;
+    public byte getByteVal() {
+        return byteVal;
     }
 
-    public void setUnsignedByteVal(int unsignedByteVal) {
-        this.unsignedByteVal = unsignedByteVal;
+    public void setByteVal(byte byteVal) {
+        this.byteVal = byteVal;
     }
 
     public int getFrequency() {
