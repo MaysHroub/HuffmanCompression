@@ -10,7 +10,7 @@ public class HuffmanDecompressor {
 
     public static final int BUFFER_SIZE = 8;
 
-    private String compressedFilePath;
+    private File compressedFile, decompressedFile;
     private String originalFileExtension;
     private byte numOfPaddingBits;
     private int headerSizeInBits;
@@ -18,30 +18,40 @@ public class HuffmanDecompressor {
     private DataInputStream din;
 
 
-    public HuffmanDecompressor() {}
+    public HuffmanDecompressor() {
 
-    public HuffmanDecompressor(String compressedFilePath) {
-        setCompressedFilePath(compressedFilePath);
+    }
+
+    public HuffmanDecompressor(File compressedFile) throws FileNotFoundException {
+        setCompressedFile(compressedFile);
     }
 
 
-    public String getCompressedFilePath() {
-        return compressedFilePath;
-    }
+    public void setCompressedFile(File compressedFile) throws IllegalArgumentException, FileNotFoundException {
+        if (compressedFile == null || compressedFile.exists())
+            throw new IllegalArgumentException("Invalid file.");
 
-    public void setCompressedFilePath(String compressedFilePath) throws IllegalArgumentException {
-        if (compressedFilePath == null || compressedFilePath.isEmpty())
-            throw new IllegalArgumentException("Invalid file name.");
-
-        this.compressedFilePath = compressedFilePath;
-        if (!getFileExtension().equalsIgnoreCase("huf"))
+        this.compressedFile = compressedFile;
+        if (!getCompressedFileExtension().equalsIgnoreCase("huf"))
             throw new IllegalArgumentException("Invalid file extension.");
+
+        din = new DataInputStream(new FileInputStream(compressedFile));
     }
+
+    public File getCompressedFile() {
+        return compressedFile;
+    }
+
+    public File getDecompressedFile() {
+        return decompressedFile;
+    }
+
 
     public void decompress() throws IOException {
-        din = new DataInputStream(new FileInputStream(compressedFilePath));
         readHeader();
         reconstructHuffmanCodingTree();
+
+        initDecompressedFile();
         decodeDataToOriginalFile();
     }
 
@@ -82,7 +92,7 @@ public class HuffmanDecompressor {
     }
 
     private void decodeDataToOriginalFile() throws IOException {
-        try (DataOutputStream dout = new DataOutputStream(new FileOutputStream(getOriginalFilePath()))) {
+        try (DataOutputStream dout = new DataOutputStream(new FileOutputStream(decompressedFile))) {
 
             byte numOfBytesRead = 0;
             byte[] bufferIn = new byte[BUFFER_SIZE], bufferOut = new byte[BUFFER_SIZE];
@@ -130,18 +140,17 @@ public class HuffmanDecompressor {
         return buffer;
     }
 
-    public String getFileExtension() {
-        int index = compressedFilePath.lastIndexOf(".");
-        if (index == -1)
+    private String getCompressedFileExtension() {
+        String[] tokens = compressedFile.getName().split("\\.");
+        if (tokens.length < 2)
             return "";
-        return compressedFilePath.substring(index + 1);
+        return tokens[1];
     }
 
-    public String getOriginalFilePath() {
-        int index = compressedFilePath.lastIndexOf(".");
-        if (index == -1)
-            return "";
-        return compressedFilePath.substring(0, index) + "_." + originalFileExtension;
+    private void initDecompressedFile() {
+        int index = compressedFile.getAbsolutePath().lastIndexOf(".");
+        if (index != -1)
+            decompressedFile = new File(compressedFile.getAbsolutePath().substring(0, index) + "_." + originalFileExtension);
     }
 
 }

@@ -13,47 +13,49 @@ public class HuffmanCompressor {
 
     public static final int BUFFER_SIZE = 8, BYTE_RANGE = 256, INTERNAL_NODE_IDX = 0, LEAF_NODE_IDX = 1;
 
-    private String originalFilePath;
+    private File originalFile;
+    private File compressedFile;
     private HNode root;
     private int[] frequencies;
     private String[] huffmanCodes;
     private DataOutputStream dout;
 
 
-    public HuffmanCompressor() {}
+    public HuffmanCompressor() {
 
-    public HuffmanCompressor(String originalFilePath) {
-        setOriginalFilePath(originalFilePath);
+    }
+
+    public HuffmanCompressor(File originalFile) throws FileNotFoundException {
+        setOriginalFile(originalFile);
     }
 
 
-    public void setOriginalFilePath(String originalFilePath) throws IllegalArgumentException {
-        if (originalFilePath == null || originalFilePath.isEmpty())
-            throw new IllegalArgumentException("Invalid file name.");
+    public void setOriginalFile(File originalFile) throws IllegalArgumentException, FileNotFoundException {
+        if (originalFile == null || !originalFile.exists())
+            throw new IllegalArgumentException("Invalid file.");
 
-        this.originalFilePath = originalFilePath;
+        this.originalFile = originalFile;
         if (getFileExtension().equalsIgnoreCase("huf"))
             throw new IllegalArgumentException("Invalid file extension.");
+
+        initCompressedFile();
+        dout = new DataOutputStream(new FileOutputStream(compressedFile));
     }
 
-    public String getOriginalFilePath() {
-        return originalFilePath;
+    public File getOriginalFile() {
+        return originalFile;
     }
 
-    public int[] getFrequencies() {
-        return frequencies;
+    public File getCompressedFile() {
+        return compressedFile;
     }
 
-    public String[] getHuffmanCodes() {
-        return huffmanCodes;
-    }
 
     public void compress() throws IOException {
         countFrequencies();
         buildHuffmanTree();
         initHuffmanCodesArray();
 
-        dout = new DataOutputStream(new FileOutputStream(getCompressedFilePath()));
         writeHeader();
         writeData();
         dout.close();
@@ -67,7 +69,7 @@ public class HuffmanCompressor {
         byte[] buffer = new byte[BUFFER_SIZE];
 
         byte numOfBytesRead = 0;
-        try (DataInputStream din = new DataInputStream(new FileInputStream(originalFilePath))) {
+        try (DataInputStream din = new DataInputStream(new FileInputStream(originalFile))) {
             while ((numOfBytesRead = (byte) din.read(buffer)) != -1)
                 for (int i = 0; i < numOfBytesRead; i++)
                     frequencies[buffer[i] + 128]++;   // byte value range: (-128, 127) -> so we add 128 to index
@@ -114,7 +116,7 @@ public class HuffmanCompressor {
     }
 
     private void writeData() throws IOException {
-        try (DataInputStream din = new DataInputStream(new FileInputStream(originalFilePath))) {
+        try (DataInputStream din = new DataInputStream(new FileInputStream(originalFile))) {
             byte numOfBytesRead = 0;
             byte[] bufferIn = new byte[BUFFER_SIZE], bufferOut = new byte[BUFFER_SIZE];
             int bitIdx, byteIdx, itr = 0;
@@ -205,18 +207,17 @@ public class HuffmanCompressor {
         inOrderCount(node.getRight(), count);
     }
 
-    public String getFileExtension() {
-        int index = originalFilePath.lastIndexOf(".");
-        if (index == -1)
+    private String getFileExtension() {
+        String[] tokens = originalFile.getName().split("\\.");
+        if (tokens.length < 2)
             return "";
-        return originalFilePath.substring(index + 1);
+        return tokens[1];
     }
 
-    public String getCompressedFilePath() {
-        int index = originalFilePath.lastIndexOf(".");
-        if (index == -1)
-            return "";
-        return originalFilePath.substring(0, index + 1) + "huf";
+    private void initCompressedFile() {
+        int index = originalFile.getAbsolutePath().lastIndexOf(".");
+        if (index != -1)
+            compressedFile = new File(originalFile.getAbsolutePath().substring(0, index + 1) + "huf");
     }
 
     public ObservableList<HuffmanData> generateHuffmanDataList() {
