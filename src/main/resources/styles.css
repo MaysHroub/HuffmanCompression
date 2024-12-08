@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+.root {
+    -fx-font-family: Ubuntu;
+    -fx-background-color: #2C2C2C;
+}
+
+.text-area {
+    -fx-font-size: 17;
+}
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 16;
+}
+
+#pathL:hover {
+    -fx-font-weight: bold;
+}
+
+.button {
+    -fx-background-color: #0078D7;
+    -fx-text-fill: white;
+    -fx-font-size: 16;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+}
+
+.button:hover {
+    -fx-background-color: #005BB5;
+}
+
+.button:pressed {
+    -fx-background-color: #004A99;
+}
+
+.table-view {
+    -fx-border-color: #004A99;
+    -fx-border-width: 3;
+}
+
+.table-view .column-header {
+    -fx-background-color: #0078D7;
+    -fx-text-fill: white;
+}
