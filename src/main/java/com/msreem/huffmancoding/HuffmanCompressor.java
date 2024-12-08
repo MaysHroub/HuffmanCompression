@@ -18,6 +18,7 @@ public class HuffmanCompressor {
     private HNode root;
     private int[] frequencies;
     private String[] huffmanCodes;
+    private int headerSizeInBits;
     private DataOutputStream dout;
 
 
@@ -83,8 +84,6 @@ public class HuffmanCompressor {
         for (int i = 0; i < numOfBytes - 1; i++) {
             HNode x = minHeap.removeMin(), y = minHeap.removeMin();
             HNode z = new HNode(x.getFreq() + y.getFreq());
-            x.setBitCode((byte) 0);
-            y.setBitCode((byte) 1);
             z.setLeft(x);
             z.setRight(y);
             minHeap.add(z);
@@ -110,7 +109,7 @@ public class HuffmanCompressor {
     private void writeHeader() throws IOException {
         dout.writeUTF(getFileExtension());
         dout.writeByte(getNumberOfPaddingBits());
-        int headerSizeInBits = getHeaderSizeInBits(root);
+        headerSizeInBits = calcHeaderSizeInBits();
         dout.writeInt(headerSizeInBits);
         byte[] buffer = new byte[(int) Math.ceil(headerSizeInBits / 8.0)];
         writeHuffmanTreeStructure(root, buffer, 0, headerSizeInBits);
@@ -194,7 +193,7 @@ public class HuffmanCompressor {
         return sum % 8;
     }
 
-    private int getHeaderSizeInBits(HNode root) {
+    private int calcHeaderSizeInBits() {
         int[] count = new int[2];
         inOrderCount(root, count);
         return count[INTERNAL_NODE_IDX] + 9 * count[LEAF_NODE_IDX];
@@ -234,6 +233,10 @@ public class HuffmanCompressor {
 
     public String getHeaderStringRepresentation() {
         StringBuilder strbld = new StringBuilder();
+        strbld.append("Original File Extension:   ").append(getFileExtension()).append("\n")
+                        .append("Number of Padding Bits:   ").append(getNumberOfPaddingBits()).append("\n")
+                        .append("Header size in bits:   ").append(headerSizeInBits).append("\n")
+                        .append("Header tree structure:\n");
         postOrderTraverse(root, strbld);
         return strbld.toString();
     }
@@ -243,8 +246,15 @@ public class HuffmanCompressor {
         postOrderTraverse(node.getLeft(), strbld);
         postOrderTraverse(node.getRight(), strbld);
 
-        if (node.isLeaf()) strbld.append(1).append("  ").append(Integer.toBinaryString(node.getByteVal())).append("   ");
-        else strbld.append(0).append("   ");
+        if (node.isLeaf()) {
+            String binaryForm = Integer.toBinaryString(node.getByteVal());
+            strbld.append(1)
+                    .append("  ")
+                    .append(binaryForm.substring(binaryForm.length() - (binaryForm.length() >= 7 ? 7 : 0)))
+                    .append("   ");
+        }
+        else
+            strbld.append(0).append("   ");
     }
 }
 
