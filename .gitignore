@@ -1,5 +1,3 @@
-src/main/resources/com/msreem/huffmancoding
-
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -40,4 +38,4 @@ build/
 .DS_StoreTest.java
 
 src/main/java/com/msreem/huffmancoding/Test.java
-src/main/java/com/msreem/huffmancoding/test
+src/main/resources/com/msreem/huffmancoding/testfiles
