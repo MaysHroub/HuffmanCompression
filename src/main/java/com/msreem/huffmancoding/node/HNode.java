@@ -3,7 +3,6 @@ package com.msreem.huffmancoding.node;
 public class HNode implements Comparable<HNode> {
 
     private byte byteVal;
-    private byte bitCode;
     private int freq;
     private HNode left, right;
 
@@ -63,11 +62,4 @@ public class HNode implements Comparable<HNode> {
         return freq - o.getFreq();
     }
 
-    public byte getBitCode() {
-        return bitCode;
-    }
-
-    public void setBitCode(byte bitCode) {
-        this.bitCode = bitCode;
-    }
 }
