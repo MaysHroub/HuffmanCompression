@@ -2,7 +2,7 @@ package com.msreem.huffmancoding.node;
 
 public class HNode implements Comparable<HNode> {
 
-    private int unsignedByteVal;
+    private byte byteVal;
     private byte bitCode;
     private int freq;
     private HNode left, right;
@@ -11,9 +11,10 @@ public class HNode implements Comparable<HNode> {
         setFreq(freq);
     }
 
-    public HNode(int freq, int unsignedByteVal) {
+    public HNode(int freq, byte byteVal) {
         setFreq(freq);
-        setUnsignedByteVal(unsignedByteVal);
+        System.out.println(byteVal);
+        setByteVal(byteVal);
     }
 
     public int getFreq() {
@@ -24,12 +25,12 @@ public class HNode implements Comparable<HNode> {
         this.freq = freq;
     }
 
-    public int getUnsignedByteVal() {
-        return unsignedByteVal;
+    public byte getByteVal() {
+        return byteVal;
     }
 
-    public void setUnsignedByteVal(int unsignedByteVal) {
-        this.unsignedByteVal = unsignedByteVal;
+    public void setByteVal(byte byteVal) {
+        this.byteVal = byteVal;
     }
 
     public HNode getLeft() {
