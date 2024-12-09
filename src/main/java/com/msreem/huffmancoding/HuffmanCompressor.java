@@ -56,6 +56,8 @@ public class HuffmanCompressor {
 
     // Compresses the specified file.
     public void compress() throws IOException {
+        if (originalFile == null)
+            throw new IllegalArgumentException("No file to compress.");
         countFrequencies();
         buildHuffmanTree();
         initHuffmanCodesArray();
@@ -77,7 +79,7 @@ public class HuffmanCompressor {
         try (DataInputStream din = new DataInputStream(new FileInputStream(originalFile))) {
             while ((numOfBytesRead = (byte) din.read(buffer)) != -1)
                 for (int i = 0; i < numOfBytesRead; i++)
-                    frequencies[buffer[i] + (buffer[i] < 0 ? 256 : 0)]++;   // byte value range: (-128, 127) -> so we add 128 to index
+                    frequencies[buffer[i] + (buffer[i] < 0 ? 256 : 0)]++;   // byte value range: (-128, 127), we add 256 for negative values.
         }
     }
 
@@ -105,7 +107,7 @@ public class HuffmanCompressor {
     private void generateHuffmanCodes(HNode node, String code) {
         if (node.isLeaf()) {
             byte b = node.getByteVal();
-            huffmanCodes[b + (b < 0 ? 256 : 0)] = code;
+            huffmanCodes[b + (b < 0 ? 256 : 0)] = code;  // byte value range: (-128, 127), we add 256 for negative values.
             return;
         }
         generateHuffmanCodes(node.getLeft(), code + "0");
@@ -132,7 +134,7 @@ public class HuffmanCompressor {
 
                 for (int i = 0; i < numOfBytesRead; i++) {
 
-                    String code = huffmanCodes[bufferIn[i] + (bufferIn[i] < 0 ? 256 : 0)];
+                    String code = huffmanCodes[bufferIn[i] + (bufferIn[i] < 0 ? 256 : 0)];  // byte value range: (-128, 127), we add 256 for negative values.
 
                     for (int j = 0; j < code.length(); j++) {
                         if (itr == BUFFER_SIZE * 8) {

@@ -51,6 +51,8 @@ public class HuffmanDecompressor {
 
     // Decompresses the specified '.huf' file.
     public void decompress() throws IOException {
+        if (compressedFile == null)
+            throw new IllegalArgumentException("No file to decompress.");
         readHeader();
         reconstructHuffmanCodingTree();
 
