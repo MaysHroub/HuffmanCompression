@@ -2,6 +2,7 @@ package com.msreem.huffmancoding.stack;
 
 import java.lang.reflect.Array;
 
+// Stack implementation using an array.
 public class ArrayStack<T extends Comparable<T>> implements Stackable<T> {
 	
 	private T[] arr;

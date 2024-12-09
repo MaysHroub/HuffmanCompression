@@ -6,6 +6,7 @@ import com.msreem.huffmancoding.stack.ArrayStack;
 import java.io.*;
 import java.util.Arrays;
 
+// This class handles the file-decompression functionality using huffman coding process.
 public class HuffmanDecompressor {
 
     public static final int BUFFER_SIZE = 8;
@@ -27,6 +28,7 @@ public class HuffmanDecompressor {
     }
 
 
+    // Setter for file to be decompressed.
     public void setCompressedFile(File compressedFile) throws IllegalArgumentException, FileNotFoundException {
         if (compressedFile == null || !compressedFile.exists())
             throw new IllegalArgumentException("Invalid file.");
@@ -47,6 +49,7 @@ public class HuffmanDecompressor {
     }
 
 
+    // Decompresses the specified '.huf' file.
     public void decompress() throws IOException {
         readHeader();
         reconstructHuffmanCodingTree();
@@ -55,12 +58,14 @@ public class HuffmanDecompressor {
         decodeDataToOriginalFile();
     }
 
+    // Reads the header information from the compressed file.
     private void readHeader() throws IOException {
         originalFileExtension = din.readUTF();
         numOfPaddingBits = din.readByte();
         headerSizeInBits = din.readInt();
     }
 
+    // Rebuilds the huffman coding tree based on the tree structure in the header.
     private void reconstructHuffmanCodingTree() throws IOException {
         ArrayStack<HNode> stack = new ArrayStack<>(HNode.class, headerSizeInBits);
         byte[] buffer = readTreeStructure();
@@ -68,7 +73,10 @@ public class HuffmanDecompressor {
         for (int i = 0; i < headerSizeInBits; i++) {
             bitIdx = i % 8;
             byteIdx = i / 8;
-            int bit = (buffer[byteIdx] >>> (7 - bitIdx)) & 1;
+            int bit = (buffer[byteIdx] >>> (7 - bitIdx)) & 1;  // Gets the bit located at index i
+
+            // bit = 1 --> leaf node
+            // Reads the byte value, creates a node with this value, and pushes it to the stack
             if (bit == 1) {
                 byte byteVal = 0;
                 for (int j = 0; j < 8; j++) {
@@ -80,7 +88,11 @@ public class HuffmanDecompressor {
                 }
                 HNode node = new HNode(0, byteVal);
                 stack.push(node);
-            } else {
+            }
+
+            // bit = 0 --> parent node
+            // Create parent node with its left and right to be the popped nodes.
+            else {
                 HNode rightNode = stack.pop(), leftNode = stack.pop();
                 HNode node = new HNode(0);
                 node.setLeft(leftNode);
@@ -91,6 +103,7 @@ public class HuffmanDecompressor {
         root = stack.pop();
     }
 
+    // Decodes the data of the compressed file and writes it to the output file.
     private void decodeDataToOriginalFile() throws IOException {
         try (DataOutputStream dout = new DataOutputStream(new FileOutputStream(decompressedFile))) {
 
@@ -101,6 +114,8 @@ public class HuffmanDecompressor {
             HNode curr = root;
 
             while ((numOfBytesRead = (byte) din.read(bufferIn)) != -1) {
+
+                // Specify when to ignore the padding bits and indicate how many bits to read.
                 if (numOfBytesRead < 8 || din.available() == 0)
                     ignorePaddingBits = true;
 
@@ -133,6 +148,7 @@ public class HuffmanDecompressor {
         }
     }
 
+    // Reads the structure of the huffman tree from the header.
     private byte[] readTreeStructure() throws IOException {
         int bufferSize = (int) Math.ceil(headerSizeInBits / 8.0);
         byte[] buffer = new byte[bufferSize];
@@ -140,6 +156,7 @@ public class HuffmanDecompressor {
         return buffer;
     }
 
+    // Returns the extension of the compressed file.
     private String getCompressedFileExtension() {
         String[] tokens = compressedFile.getName().split("\\.");
         if (tokens.length < 2)
@@ -147,6 +164,7 @@ public class HuffmanDecompressor {
         return tokens[1];
     }
 
+    // Initializes the file which contains decompressed data.
     private void initDecompressedFile() {
         int index = compressedFile.getAbsolutePath().lastIndexOf(".");
         if (index != -1)

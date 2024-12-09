@@ -1,5 +1,6 @@
 package com.msreem.huffmancoding.tabledata;
 
+// This class encapsulates details about a symbol in Huffman encoding process.
 public class HuffmanData {
 
     private byte byteVal;

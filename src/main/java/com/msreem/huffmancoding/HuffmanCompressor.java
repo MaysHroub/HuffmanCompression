@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import java.io.*;
 import java.util.Arrays;
 
+// This class handles the file-compression functionality using huffman coding process.
 public class HuffmanCompressor {
 
     public static final int BUFFER_SIZE = 8, BYTE_RANGE = 256, INTERNAL_NODE_IDX = 0, LEAF_NODE_IDX = 1;
@@ -31,6 +32,7 @@ public class HuffmanCompressor {
     }
 
 
+    // Setter for file to be compressed.
     public void setOriginalFile(File originalFile) throws IllegalArgumentException, FileNotFoundException {
         if (originalFile == null || !originalFile.exists())
             throw new IllegalArgumentException("Invalid file.");
@@ -52,6 +54,7 @@ public class HuffmanCompressor {
     }
 
 
+    // Compresses the specified file.
     public void compress() throws IOException {
         countFrequencies();
         buildHuffmanTree();
@@ -62,6 +65,7 @@ public class HuffmanCompressor {
         dout.close();
     }
 
+    // Counts the frequency of each byte in the original file.
     private void countFrequencies() throws IOException {
         // to store frequency of each byte (00000000 to 11111111) -> 256 possibility
         frequencies = new int[BYTE_RANGE];
@@ -77,6 +81,7 @@ public class HuffmanCompressor {
         }
     }
 
+    // Builds the huffman coding tree.
     private void buildHuffmanTree() {
         MinHeap<HNode> minHeap = getMinHeap();
         int numOfBytes = minHeap.getSize();
@@ -91,6 +96,7 @@ public class HuffmanCompressor {
         root = minHeap.getMin();
     }
 
+    // Initializes codes array with the huffman code of each corresponding byte.
     private void initHuffmanCodesArray() {
         huffmanCodes = new String[BYTE_RANGE];
         generateHuffmanCodes(root, "");
@@ -106,6 +112,7 @@ public class HuffmanCompressor {
         generateHuffmanCodes(node.getRight(), code + "1");
     }
 
+    // Writes the header, containing original file extension, number of padding bits, header size, and huffman tree structure, to the output file.
     private void writeHeader() throws IOException {
         dout.writeUTF(getFileExtension());
         dout.writeByte(getNumberOfPaddingBits());
@@ -115,6 +122,7 @@ public class HuffmanCompressor {
         writeHuffmanTreeStructure(root, buffer, 0, headerSizeInBits);
     }
 
+    // Encodes the data and writes it to the output file.
     private void writeData() throws IOException {
         try (DataInputStream din = new DataInputStream(new FileInputStream(originalFile))) {
             byte numOfBytesRead = 0;
@@ -146,7 +154,8 @@ public class HuffmanCompressor {
         }
     }
 
-    // post-order traversal
+    // Post-order traversal
+    // Writes the huffman tree structure to the output file as part of the header.
     private int writeHuffmanTreeStructure(HNode node, byte[] buffer, int itr, int n) throws IOException {
         if (node == null) return itr;
 
@@ -175,6 +184,7 @@ public class HuffmanCompressor {
         return itr;
     }
 
+    // Initializes a minHeap with nodes and returns it.
     private MinHeap<HNode> getMinHeap() {
         MinHeap<HNode> minHeap = new MinHeap<>(BYTE_RANGE);
         for (int i = 0; i < frequencies.length; i++) {
@@ -184,6 +194,7 @@ public class HuffmanCompressor {
         return minHeap;
     }
 
+    // Returns number of padding bits.
     private int getNumberOfPaddingBits() {
         long sum = 0;
         for (int i = 0; i < BYTE_RANGE; i++)
@@ -192,6 +203,7 @@ public class HuffmanCompressor {
         return (int) (8 - sum % 8);
     }
 
+    // Returns the header size in bits.
     private int calcHeaderSizeInBits() {
         int[] count = new int[2];
         inOrderCount(root, count);
@@ -206,6 +218,7 @@ public class HuffmanCompressor {
         inOrderCount(node.getRight(), count);
     }
 
+    // Returns the original file extension.
     private String getFileExtension() {
         String[] tokens = originalFile.getName().split("\\.");
         if (tokens.length < 2)
@@ -213,12 +226,14 @@ public class HuffmanCompressor {
         return tokens[1];
     }
 
+    // Initializes the Compressed File.
     private void initCompressedFile() {
         int index = originalFile.getAbsolutePath().lastIndexOf(".");
         if (index != -1)
             compressedFile = new File(originalFile.getAbsolutePath().substring(0, index + 1) + "huf");
     }
 
+    // Returns a list containing HuffmanData objects for TableView.
     public ObservableList<HuffmanData> generateHuffmanDataList() {
         ObservableList<HuffmanData> list = FXCollections.observableArrayList();
         for (int i = 0; i < BYTE_RANGE; i++) {
@@ -230,6 +245,7 @@ public class HuffmanCompressor {
         return list;
     }
 
+    // Returns a string representation of the file header.
     public String getHeaderStringRepresentation() {
         StringBuilder strbld = new StringBuilder();
         strbld.append("Original File Extension:   ").append(getFileExtension()).append("\n")

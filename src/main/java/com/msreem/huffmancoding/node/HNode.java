@@ -1,5 +1,6 @@
 package com.msreem.huffmancoding.node;
 
+// This class represents the nodes of which a huffman coding tree consists.
 public class HNode implements Comparable<HNode> {
 
     private byte byteVal;

@@ -22,6 +22,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
+// This is the driver class which contains all the application's logic.
 public class MainApp extends Application {
 
     private HuffmanCompressor compressor;
