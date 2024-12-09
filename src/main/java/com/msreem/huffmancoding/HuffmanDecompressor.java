@@ -101,11 +101,11 @@ public class HuffmanDecompressor {
             HNode curr = root;
 
             while ((numOfBytesRead = (byte) din.read(bufferIn)) != -1) {
-                if (numOfBytesRead < 8 || din.available() == -1)
+                if (numOfBytesRead < 8 || din.available() == 0)
                     ignorePaddingBits = true;
 
                 for (int i = 0; i < numOfBytesRead; i++) {
-                    if (ignorePaddingBits && i == numOfBytesRead - 1)
+                    if (ignorePaddingBits && i == numOfBytesRead-1)
                         numOfBitsToRead = 8 - numOfPaddingBits;
 
                     for (int j = 0; j < numOfBitsToRead; j++) {
