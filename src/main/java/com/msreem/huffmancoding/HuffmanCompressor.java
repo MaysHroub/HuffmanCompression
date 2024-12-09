@@ -185,12 +185,11 @@ public class HuffmanCompressor {
     }
 
     private int getNumberOfPaddingBits() {
-        int sum = 0;
+        long sum = 0;
         for (int i = 0; i < BYTE_RANGE; i++)
             if (huffmanCodes[i] != null)
-                sum += frequencies[i] * huffmanCodes[i].length();
-
-        return sum % 8;
+                sum += (long) frequencies[i] * huffmanCodes[i].length();
+        return (int) (8 - sum % 8);
     }
 
     private int calcHeaderSizeInBits() {
