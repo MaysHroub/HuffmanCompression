@@ -8,4 +8,6 @@ module com.msreem.huffmancoding {
 
     opens com.msreem.huffmancoding to javafx.fxml;
     exports com.msreem.huffmancoding;
+    exports com.msreem.huffmancoding.huffman;
+    opens com.msreem.huffmancoding.huffman to javafx.fxml;
 }

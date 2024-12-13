@@ -1,5 +1,7 @@
 package com.msreem.huffmancoding;
 
+import com.msreem.huffmancoding.huffman.HuffmanCompressor;
+import com.msreem.huffmancoding.huffman.HuffmanDecompressor;
 import com.msreem.huffmancoding.tabledata.HuffmanData;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -19,7 +21,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package com.msreem.huffmancoding;
+package com.msreem.huffmancoding.huffman;
 
 import com.msreem.huffmancoding.heap.MinHeap;
 import com.msreem.huffmancoding.node.HNode;
