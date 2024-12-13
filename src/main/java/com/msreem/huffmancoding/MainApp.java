@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -76,12 +77,10 @@ public class MainApp extends Application {
         processedFilePathL.setContentDisplay(ContentDisplay.RIGHT);
 
         processedFilePathL.setOnMouseClicked(e -> {
-            if (Desktop.isDesktopSupported()) {
-                try {
-                    Runtime.getRuntime().exec("explorer /select, " + processedFilePathL.getText());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+            try {
+                Runtime.getRuntime().exec("explorer /select, " + processedFilePathL.getText());
+            } catch (IOException ex) {
+                messageL.setText("Can't open file.");
             }
         });
 
@@ -202,6 +201,10 @@ public class MainApp extends Application {
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         stage.setTitle("Huffman Compressing");
         stage.setScene(scene);
+
+        Image icon = new Image(getClass().getResource("/com/msreem/huffmancoding/images/folder.png").toExternalForm());
+        stage.getIcons().add(icon);
+
         stage.show();
     }
 

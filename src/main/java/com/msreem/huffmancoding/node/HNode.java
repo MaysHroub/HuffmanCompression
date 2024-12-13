@@ -13,7 +13,6 @@ public class HNode implements Comparable<HNode> {
 
     public HNode(int freq, byte byteVal) {
         setFreq(freq);
-        System.out.println(byteVal);
         setByteVal(byteVal);
     }
 

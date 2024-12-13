@@ -42,7 +42,6 @@ public class HuffmanCompressor {
             throw new IllegalArgumentException("Invalid file extension.");
 
         initCompressedFile();
-        dout = new DataOutputStream(new FileOutputStream(compressedFile));
     }
 
     public File getOriginalFile() {
@@ -58,12 +57,15 @@ public class HuffmanCompressor {
     public void compress() throws IOException {
         if (originalFile == null)
             throw new IllegalArgumentException("No file to compress.");
+
+        dout = new DataOutputStream(new FileOutputStream(compressedFile));
+
         countFrequencies();
-        buildHuffmanTree();
+        constructHuffmanCodingTree();
         initHuffmanCodesArray();
 
         writeHeader();
-        writeData();
+        encodeAndWriteData();
         dout.close();
     }
 
@@ -84,7 +86,7 @@ public class HuffmanCompressor {
     }
 
     // Builds the huffman coding tree.
-    private void buildHuffmanTree() {
+    private void constructHuffmanCodingTree() {
         MinHeap<HNode> minHeap = getMinHeap();
         int numOfBytes = minHeap.getSize();
 
@@ -125,7 +127,7 @@ public class HuffmanCompressor {
     }
 
     // Encodes the data and writes it to the output file.
-    private void writeData() throws IOException {
+    private void encodeAndWriteData() throws IOException {
         try (DataInputStream din = new DataInputStream(new FileInputStream(originalFile))) {
             byte numOfBytesRead = 0;
             byte[] bufferIn = new byte[BUFFER_SIZE], bufferOut = new byte[BUFFER_SIZE];
@@ -202,7 +204,11 @@ public class HuffmanCompressor {
         for (int i = 0; i < BYTE_RANGE; i++)
             if (huffmanCodes[i] != null)
                 sum += (long) frequencies[i] * huffmanCodes[i].length();
-        return (int) (8 - sum % 8);
+
+        if (sum % 8 == 0)  // in case sum can fill the bytes fully.
+            return 0;
+        else
+            return (int) (8 - sum % 8);
     }
 
     // Returns the header size in bits.
@@ -253,7 +259,7 @@ public class HuffmanCompressor {
         strbld.append("Original File Extension:   ").append(getFileExtension()).append("\n")
                         .append("Number of Padding Bits:   ").append(getNumberOfPaddingBits()).append("\n")
                         .append("Header size in bits:   ").append(headerSizeInBits).append("\n")
-                        .append("Header tree structure:\n");
+                        .append("Huffman Coding Tree Structure:\n");
         postOrderTraverse(root, strbld);
         return strbld.toString();
     }

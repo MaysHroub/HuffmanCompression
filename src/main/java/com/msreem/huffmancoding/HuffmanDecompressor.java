@@ -36,12 +36,6 @@ public class HuffmanDecompressor {
         this.compressedFile = compressedFile;
         if (!getCompressedFileExtension().equalsIgnoreCase("huf"))
             throw new IllegalArgumentException("Invalid file extension.");
-
-        din = new DataInputStream(new FileInputStream(compressedFile));
-    }
-
-    public File getCompressedFile() {
-        return compressedFile;
     }
 
     public File getDecompressedFile() {
@@ -53,11 +47,15 @@ public class HuffmanDecompressor {
     public void decompress() throws IOException {
         if (compressedFile == null)
             throw new IllegalArgumentException("No file to decompress.");
+
+        din = new DataInputStream(new FileInputStream(compressedFile));
+
         readHeader();
         reconstructHuffmanCodingTree();
 
         initDecompressedFile();
-        decodeDataToOriginalFile();
+        decodeAndWriteData();
+        din.close();
     }
 
     // Reads the header information from the compressed file.
@@ -106,7 +104,7 @@ public class HuffmanDecompressor {
     }
 
     // Decodes the data of the compressed file and writes it to the output file.
-    private void decodeDataToOriginalFile() throws IOException {
+    private void decodeAndWriteData() throws IOException {
         try (DataOutputStream dout = new DataOutputStream(new FileOutputStream(decompressedFile))) {
 
             byte numOfBytesRead = 0;

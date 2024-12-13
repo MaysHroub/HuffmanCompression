@@ -3,7 +3,7 @@ package com.msreem.huffmancoding.heap;
 // Implementation of MinHeap using an array
 public class MinHeap<T extends Comparable<T>> implements MinHeapInterface<T> {
 
-    private T[] arr;
+    private final T[] arr;
     private int N;
 
     @SuppressWarnings("unchecked")
@@ -22,7 +22,7 @@ public class MinHeap<T extends Comparable<T>> implements MinHeapInterface<T> {
         T min = arr[1];
         swap(1, N--);
         sink(1);
-        arr[N+1] = null; // prevent loitering ??
+        arr[N+1] = null;
         return min;
     }
 
