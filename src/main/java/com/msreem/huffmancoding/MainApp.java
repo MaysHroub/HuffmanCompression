@@ -76,12 +76,10 @@ public class MainApp extends Application {
         processedFilePathL.setContentDisplay(ContentDisplay.RIGHT);
 
         processedFilePathL.setOnMouseClicked(e -> {
-            if (Desktop.isDesktopSupported()) {
-                try {
-                    Runtime.getRuntime().exec("explorer /select, " + processedFilePathL.getText());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+            try {
+                Runtime.getRuntime().exec("explorer /select, " + processedFilePathL.getText());
+            } catch (IOException ex) {
+                messageL.setText("Can't open file.");
             }
         });
 
